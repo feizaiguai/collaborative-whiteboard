@@ -1,28 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Collaborative Whiteboard - by Daomei</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-  min-height: 100vh; display: flex; justify-content: center; align-items: center; color: #fff; }
-.container { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.1); border-radius: 24px;
-  padding: 2.5rem; width: 500px; max-width: 95vw; text-align: center; }
-h1 { font-size: 2rem; margin-bottom: 1rem;
-  background: linear-gradient(to right, #f093fb, #f5576c);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-p { opacity: 0.7; line-height: 1.6; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative Whiteboard</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
-  <h1>🚀 Collaborative Whiteboard</h1>
-  <p>A project built by Daomei AI Assistant</p>
-  <p style="margin-top:1rem;font-size:0.85rem;opacity:0.4;">Built with ❤️ by Daomei</p>
-</div>
+    <div class="app-container">
+        <header class="header glass-panel">
+            <div class="logo">
+                <span class="logo-icon">✏️</span>
+                <h1>Collaborative Whiteboard</h1>
+            </div>
+            <div class="connection-status">
+                <span class="status-dot" id="statusDot"></span>
+                <span id="connectionText">Connecting...</span>
+                <span id="userCount" class="user-count">0 users online</span>
+            </div>
+        </header>
+
+        <aside class="toolbar glass-panel">
+            <div class="tool-section">
+                <h3>Drawing Tools</h3>
+                <div class="tool-group">
+                    <button class="tool-btn active" data-tool="pen" title="Freehand Drawing">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                            <path d="M2 2l7.586 7.586"></path>
+                        </svg>
+                    </button>
+                    <button class="tool-btn" data-tool="eraser" title="Eraser">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 20H7L3 16c-.8-.8-.8-2 0-2.8L13.8 2.4c.8-.8 2-.8 2.8 0L21 6.8c.8.8.8 2 0 2.8L12 18.6"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h3>Shapes</h3>
+                <div class="tool-group">
+                    <button class="tool-btn" data-tool="line" title="Line">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="19" x2="19" y2="5"></line>
+                        </svg>
+                    </button>
+                    <button class="tool-btn" data-tool="rectangle" title="Rectangle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                        </svg>
+                    </button>
+                    <button class="tool-btn" data-tool="circle" title="Circle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"></circle>
+                        </svg>
+                    </button>
+                    <button class="tool-btn" data-tool="triangle" title="Triangle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12,3 22,21 2,21"></polygon>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h3>Elements</h3>
+                <div class="tool-group">
+                    <button class="tool-btn" data-tool="text" title="Text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="4,7 4,4 20,4 20,7"></polyline>
+                            <line x1="9" y1="20" x2="15" y2="20"></line>
+                            <line x1="12" y1="4" x2="12" y2="20"></line>
+                        </svg>
+                    </button>
+                    <button class="tool-btn" data-tool="sticky" title="Sticky Note">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h8"></path>
+                            <path d="M14 2v6h6"></path>
+                            <path d="M14 2l6 6v10a2 2 0 0 1-2 2h-4"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h3>Style</h3>
+                <div class="color-picker">
+                    <label>Color</label>
+                    <input type="color" id="colorPicker" value="#00d9ff">
+                    <div class="preset-colors">
+                        <span class="color-preset" data-color="#00d9ff" style="background:#00d9ff"></span>
+                        <span class="color-preset" data-color="#ff006e" style="background:#ff006e"></span>
+                        <span class="color-preset" data-color="#ffbe0b" style="background:#ffbe0b"></span>
+                        <span class="color-preset" data-color="#8338ec" style="background:#8338ec"></span>
+                        <span class="color-preset" data-color="#3a86ff" style="background:#3a86ff"></span>
+                        <span class="color-preset" data-color="#06ffa5" style="background:#06ffa5"></span>
+                        <span class="color-preset" data-color="#ffffff" style="background:#ffffff"></span>
+                        <span class="color-preset" data-color="#ff5500" style="background:#ff5500"></span>
+                    </div>
+                </div>
+                <div class="brush-size">
+                    <label>Brush Size: <span id="brushSizeValue">5</span>px</label>
+                    <input type="range" id="brushSize" min="1" max="50" value="5">
+                </div>
+                <div class="opacity-control">
+                    <label>Opacity: <span id="opacityValue">100</span>%</label>
+                    <input type="range" id="opacity" min="10" max="100" value="100">
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h3>Actions</h3>
+                <div class="action-buttons">
+                    <button class="action-btn" id="undoBtn" title="Undo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 7v6h6"></path>
+                            <path d="M3 13a9 9 0 1 0 2.5-6.5L3 9"></path>
+                        </svg>
+                    </button>
+                    <button class="action-btn" id="redoBtn" title="Redo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 7v6h-6"></path>
+                            <path d="M21 13a9 9 0 1 1-2.5-6.5L21 9"></path>
+                        </svg>
+                    </button>
+                    <button class="action-btn" id="clearBtn" title="Clear Canvas">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18"></path>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </button>
+                    <button class="action-btn" id="saveBtn" title="Save as Image">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <main class="canvas-container">
+            <canvas id="whiteboard"></canvas>
+            <div id="stickyNotesContainer"></div>
+            <div id="cursorsContainer"></div>
+            <div class="text-input-container" id="textInputContainer" style="display:none;">
+                <input type="text" id="textInput" placeholder="Type here...">
+                <button id="confirmText">✓</button>
+            </div>
+        </main>
+
+        <div class="fill-mode-toggle">
+            <label>
+                <input type="checkbox" id="fillMode">
+                <span>Fill shapes</span>
+            </label>
+        </div>
+
+        <footer class="footer glass-panel">
+            <div class="keyboard-hints">
+                <span><kbd>P</kbd> Pen</span>
+                <span><kbd>E</kbd> Eraser</span>
+                <span><kbd>R</kbd> Rectangle</span>
+                <span><kbd>C</kbd> Circle</span>
+                <span><kbd>T</kbd> Text</span>
+                <span><kbd>S</kbd> Sticky</span>
+                <span><kbd>Ctrl+Z</kbd> Undo</span>
+                <span><kbd>Ctrl+Y</kbd> Redo</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
